@@ -88,6 +88,25 @@ class TestCashRegister:
         assert(captured_out.getvalue() == "There is no discount to apply.\n")
         self.reset_register_totals()
 
+    def test_invalid_discount_is_rejected(self):
+        '''rejects invalid discount values and prints an error'''
+        captured_out = io.StringIO()
+        sys.stdout = captured_out
+        invalid_register = CashRegister(250)
+        sys.stdout = sys.__stdout__
+        assert(invalid_register.discount == 0)
+        assert(captured_out.getvalue() == "Not valid discount\n")
+
+    def test_previous_transactions_recorded(self):
+        '''records transactions with item, price, and quantity'''
+        new_register = CashRegister()
+        new_register.add_item("eggs", 1.99, 2)
+        assert(new_register.previous_transactions == [{
+            "item": "eggs",
+            "price": 1.99,
+            "quantity": 2,
+        }])
+
     def test_items_list_without_multiples(self):
         '''returns an array containing all items that have been added'''
         new_register = CashRegister()
